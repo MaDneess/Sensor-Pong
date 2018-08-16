@@ -12,6 +12,9 @@ class PlayerPad(Pad):
         super().__init__(side)
         self.device = device
         self.started = datetime.now()
+        # Testing
+        self.keyPressed = False
+        self.direction = ""
         
     def move(self):
         if self.device.isOpen():
@@ -33,6 +36,13 @@ class PlayerPad(Pad):
             
         else:
             self.device.open()
+
+    def moveKey(self):
+        if self.keyPressed:
+            if self.direction == "UP":
+                super().moveKey(-Commons.PAD_SPEED)
+            elif self.direction == "DOWN":
+                super().moveKey(Commons.PAD_SPEED)
 
     def update(self, board):
         pg.draw.rect(board, Commons.BLACK, self.getRect(), 0)

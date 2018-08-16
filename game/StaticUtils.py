@@ -6,7 +6,6 @@ date: 24/07/2018
 
 """
 from datetime import datetime
-from CommUtils import CommUtils
 
 class StaticUtils:
 

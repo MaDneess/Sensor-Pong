@@ -3,6 +3,7 @@ import Commons
 
 from Button import Button
 
+
 class BackButton(Button):
     
     def __init__(self, pos, text, board):

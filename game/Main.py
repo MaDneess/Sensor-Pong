@@ -1,4 +1,5 @@
-#/dev/ttyACM0:9600:3
+# RPI Serial: /dev/ttyACM0:9600:3
+# Windows Serial: COM3:9600:3
 from Board import Board
 from StaticUtils import StaticUtils
 from CommUtils import CommUtils
@@ -8,7 +9,6 @@ class Main:
     def __init__(self):
         StaticUtils.printBanner()
         #get serial ports details
-        
         port1 = self.getPortDetails(1)
         #port2 = self.getPortDetails(2)
         #while port1 == port2:
@@ -18,8 +18,7 @@ class Main:
         
         self.board = Board(port1.split(':'), port2=[])
         self.board.run()
-        
-        
+
     def getPortDetails(self, n):
         temp = input("Device %d, Specify device port, baudrate (opt. timeout)\n{PORT}:{BAUDRATE}:{TIMEOUT}\n" % (n))
         # ask for a valid command until received
@@ -28,7 +27,7 @@ class Main:
             temp = input("Specify device port, baudrate (opt. timeout)\n{PORT}:{BAUDRATE}:{TIMEOUT}\n")
         return temp
     
-        """
+    """
         Description:
             Method checks if the specified port is a valid UNIX/WIN serial port
     """
@@ -46,7 +45,7 @@ class Main:
                 if (StaticUtils.intTryParse(message[1])[1]) and (StaticUtils.intTryParse(message[2])[1]):
                     return True
         return False
-    
+
+
 if __name__ == "__main__":
     main = Main()
-    
