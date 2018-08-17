@@ -2,6 +2,7 @@ import Commons
 
 from Button import Button
 
+
 class CalibrateButton(Button):
     
     def __init__(self, pos, text, board):
@@ -9,4 +10,3 @@ class CalibrateButton(Button):
         
     def on_click(self):
         self.board.state = Commons.IN_MENU_CAL
-        self.board.beginCal()

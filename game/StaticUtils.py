@@ -5,6 +5,7 @@ author: Aleksej Zaicev
 date: 24/07/2018
 
 """
+import time
 from datetime import datetime
 
 class StaticUtils:
@@ -18,18 +19,14 @@ class StaticUtils:
         print("################################################")
         print("################################################\n")
 
-        
-    @staticmethod
-    def printMessage(status, msg):
-        print(str(datetime.now()) + " --- " + str(status) + " : " + msg)    
 
     @staticmethod
-    def getSeconds(dt):
-        dt = str(dt).split(':')
-        dt = dt[2]
-        dt = dt.split('.')
-        return int(dt[0])
-        
+    def getMillis():
+        return int(round(time.time() * 1000))
+
+    @staticmethod
+    def printMessage(status, msg):
+        print(str(datetime.now()) + " --- " + str(status) + " : " + msg)
 
     @staticmethod
     def intTryParse(value):

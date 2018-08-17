@@ -15,8 +15,10 @@ class Pad(ABC):
         self.width = Commons.PAD_WIDTH
         self.height = Commons.PAD_HEIGHT
         if side == 'LEFT':
+            self.name = "BLUE"
             self.x = Commons.CAGE_WIDTH
         elif side == 'RIGHT':
+            self.name = "RED"
             self.x = Commons.B_WIDTH - Commons.CAGE_WIDTH - Commons.PAD_WIDTH
         else:
             raise Exception(Commons.ERROR + " Unknown side argument")
@@ -24,8 +26,7 @@ class Pad(ABC):
         self.score = 0
     
     @abstractmethod
-    def move(self, dy):
-        #self.y += dy
+    def move(self):
         if self.y < Commons.OFFSET_HEIGHT:
             self.y = Commons.OFFSET_HEIGHT
         elif (self.y + self.height) > (Commons.B_HEIGHT - Commons.OFFSET_HEIGHT):

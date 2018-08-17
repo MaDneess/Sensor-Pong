@@ -13,6 +13,8 @@ IN_GAME_WIN_P2 = "WIN_P2"
 EXIT = "EXIT"
 IN_GAME_CAL = "CAL_GAME"
 IN_MENU_CAL = "CAL_MENU"
+CAL_MIN = "CAL_MIN"
+CAL_MAX = "CAL_CAL"
 
 #SCREEN/BOARD SIZES
 B_WIDTH = int(1280/2)
@@ -27,6 +29,9 @@ LIGHT_BLUE = (26, 140, 255)
 
 #IMAGES
 LOGO = pygame.image.load("images/ge.png")
+
+#FONTS
+ARCADE_FONT = "fonts/arcade.ttf"
 
 #BUTTON OPTIONS
 BTN_WIDTH = int(B_WIDTH*0.2)

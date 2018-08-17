@@ -10,6 +10,4 @@ class GameButton(Button):
         
     def on_click(self):
         self.board.state = Commons.IN_GAME_CAL
-        self.board.beginCal()
-        
-        
+

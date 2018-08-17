@@ -4,15 +4,14 @@
     author: Aleksej Zaicev
     date: 24/07/2018
 """
-import time
 
-from threading import Thread
 from serial import *
 from StaticUtils import StaticUtils
 from CommUtils import CommUtils
 
-class CommController(Thread):
-    
+
+class CommController:
+
     def __init__(self, args):
         super().__init__()
         
@@ -23,13 +22,9 @@ class CommController(Thread):
             self.serial = Serial(args[0], int(args[1]))
             self.port = args[0]
         else:
-            StatisUtils.printMessage(CommUtils.CMD_ERROR, CommUtils.InvalidPortException)
-            raise Exception(CommUtils.InvalidPortException)
+            StaticUtils.printMessage(CommUtils.CMD_ERROR, CommUtils.InvalidPortException)
+            raise ValueError(CommUtils.InvalidPortException)
         self.serialClose()
-    
-    def run(self):
-        while (self.serial is not None) and (self.serial.is_open):
-            None
      
     """
         Description:
@@ -40,7 +35,6 @@ class CommController(Thread):
             :param {str(msg)}
     """
     def readBuffer(self):
-        #time.sleep(.5)
         if self.serial.inWaiting():
             msg = self.serial.readline()
             print(msg)

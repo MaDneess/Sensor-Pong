@@ -14,10 +14,15 @@ class CommUtils:
             CMD_RESPONSE, identifies serial response
             
     """
-
     CMD_OK = 200
     CMD_ERROR = 500
     CMD_RESPONSE = 201
+
+    """
+        Description:
+            Device specific configuration
+    """
+    CALIBRATION_DATA_SIZE = 100
 
     """
 
@@ -28,7 +33,6 @@ class CommUtils:
             :param          {DeviceNotFoundException}    thrown if no device was detected on the opened port
             
     """
-
     ConnectionException = "No opened serial port detected"
     OpenedConnectionException = "Serial port is already opened"
     InvalidPortException = "Serial port provided is invalid"
@@ -41,6 +45,5 @@ class CommUtils:
             Used to identify correct path to serial port
 
     """
-
     SERIAL_PORT_START_UNIX = "/dev/tty"
     SERIAL_PORT_START_WIN = "COM"
