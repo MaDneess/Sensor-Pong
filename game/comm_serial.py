@@ -4,6 +4,7 @@
     Date: 2018/08/18
 """
 from serial import Serial
+from serial import SerialException
 from static_utils import StaticUtils
 import comm_utils
 
@@ -12,16 +13,26 @@ class CommSerial:
     """Description: serial communication class providing basic serial functionality"""
 
     def __init__(self, args):
+        def assign_port(port, baudrate, timeout):
+            """Description: method creates serial port object"""
+
+            try:
+                serial_port = Serial(port, baudrate, timeout)
+                return serial_port
+            except SerialException as e:
+                StaticUtils.print_message(comm_utils.CMD_ERROR, str(e))
+                return None
+
         if len(args) == 3:
-            self.serial = Serial(args[0], int(args[1]), timeout=int(args[2]))
-            self.port = args[0]
+            self.serial = assign_port(args[0], int(args[1]), timeout=int(args[2]))
         elif len(args) == 2:
-            self.serial = Serial(args[0], int(args[1]))
+            self.serial = Serial(args[0], int(args[1]), timeout=3)
+
+        if self.serial is not None:
             self.port = args[0]
+            self.serial_close()
         else:
-            StaticUtils.print_message(comm_utils.CMD_ERROR, comm_utils.INVALID_PORT_EXCEPTION)
-            raise ValueError(comm_utils.INVALID_PORT_EXCEPTION)
-        self.serial_close()
+            raise SerialException(comm_utils.CONNECTION_EXCEPTION)
 
     def read_buffer(self):
         """Description: method reads incoming messages on the opened serial port
@@ -29,10 +40,13 @@ class CommSerial:
         """
 
         msg = ""
-        if self.serial.inWaiting():
-            msg = self.serial.readline()
-            print(msg, len(msg), sep="---")
-            msg = msg.decode('utf-8', 'ignore')
+        try:
+            if self.serial.inWaiting():
+                msg = self.serial.readline()
+                print(msg, len(msg), sep="---")
+                msg = msg.decode('utf-8', 'ignore')
+        except SerialException:
+            StaticUtils.print_message(comm_utils.CMD_ERROR, "Failed to read buffer")
         return msg
 
     def write_serial(self, str_msg):
@@ -41,7 +55,12 @@ class CommSerial:
         """
 
         msg = str_msg.encode('utf-8', 'ignore')
-        self.serial.write(msg)
+        try:
+            self.serial.write(msg)
+        except SerialException:
+            StaticUtils.print_message(comm_utils.CMD_ERROR, comm_utils.CONNECTION_EXCEPTION)
+        except TypeError:
+            StaticUtils.print_message(comm_utils.CMD_ERROR, "Failed to send bytes: " + str(msg))
 
     def serial_open(self):
         """Description: method opens serial port"""

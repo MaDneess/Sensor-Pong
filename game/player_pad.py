@@ -26,21 +26,26 @@ class PlayerPad(Pad):
         """Description: method provides player pad movement action"""
 
         if self.device.is_open():
-            coord_y = self.transform_to_pixel(self.device.reading)
-            self.pos_y = int(self.height/2) + coord_y
-            super().move()
+            pos_y = self.transform_to_pixel(self.device.reading)
+            if isinstance(pos_y, int):
+                self.pos_y = pos_y
+                super().move()
         else:
             self.device.open()
 
     def transform_to_pixel(self, reading):
         """Description: method transforms device readings into player pad position
         :param: Device reading
-        :return: Pad pixel position
+        :return: Pad pixel position or None in exception
         """
-
-        coord_x = int((reading - self.device.minimum_point)*100 /
-                      (self.device.maximum_point - self.device.minimum_point))
-        return int((game_utils.B_HEIGHT - self.height - (game_utils.CAGE_WIDTH * 2)) * coord_x * .01)
+        try:
+            coord_x = int((reading - self.device.minimum_point)*100 /
+                          (self.device.maximum_point - self.device.minimum_point))
+            return int((game_utils.B_HEIGHT - self.height -
+                        (game_utils.OFFSET_HEIGHT * 2)) * coord_x * .01)
+        except TypeError:
+            StaticUtils.print_message(comm_utils.CMD_ERROR, "Bad reading: " + str(reading))
+            return None
 
     def move_key(self):
         """Description: method provides player pad movement on key press"""
