@@ -15,6 +15,8 @@ class Ball:
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.color = game_utils.BLACK
+        self.sound_hit = pygame.mixer.Sound(game_utils.BALL_HIT)
+        self.sound_scored = pygame.mixer.Sound(game_utils.BALL_SCORED)
         # get seconds
         self.started = datetime.now()
         self.dir_x = "LEFT"
@@ -28,21 +30,27 @@ class Ball:
 
         if self.is_colliding(player_blue):
             self.change_direction()
+            player_blue.stop_sound()
+            player_blue.play_sound()
 
         if self.pos_x < game_utils.BALL_SIZE:
+            self.play_sound_hit()
             self.dir_x = "RIGHT"
             self.pos_x = game_utils.BALL_SIZE
             self.changed = False
         elif (self.pos_x + game_utils.BALL_SIZE) > game_utils.B_WIDTH:
+            self.play_sound_hit()
             self.dir_x = "LEFT"
             self.pos_x = game_utils.B_WIDTH - game_utils.BALL_SIZE
             self.changed = False
 
         if self.pos_y < game_utils.BALL_SIZE:
+            self.play_sound_hit()
             self.dir_y = "DOWN"
             self.pos_y = game_utils.BALL_SIZE
             self.changed = False
         elif (self.pos_y + game_utils.BALL_SIZE) > game_utils.B_HEIGHT:
+            self.play_sound_hit()
             self.dir_y = "UP"
             self.pos_y = game_utils.B_HEIGHT - game_utils.BALL_SIZE
             self.changed = False
@@ -87,3 +95,21 @@ class Ball:
                 self.dir_x = "RIGHT"
             elif self.dir_x == "RIGHT":
                 self.dir_x = "LEFT"
+
+    def play_sound_hit(self):
+        """Description: method plays ball hit sound effect"""
+
+        self.stop_sounds()
+        self.sound_hit.play()
+
+    def play_sound_scored(self):
+        """Description: method plays ball scored sound effect"""
+
+        self.stop_sounds()
+        self.play_sound_scored()
+
+    def stop_sounds(self):
+        """Description: method stop all ball sound effects"""
+
+        self.sound_hit.stop()
+        self.sound_scored.stop()

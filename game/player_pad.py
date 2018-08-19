@@ -18,6 +18,7 @@ class PlayerPad(Pad):
         Pad.__init__(self, side)
         self.device = PressureDevice(port, board)
         self.device.start()
+        self.sound = pygame.mixer.Sound(game_utils.PAD_HIT)
         # Testing
         self.key_pressed = False
         self.direction = "NONE"
@@ -99,3 +100,14 @@ class PlayerPad(Pad):
         self.device.close()
         StaticUtils.print_message(comm_utils.CMD_RESPONSE, "Player " + self.name +
                                   " maximum point is -- " + str(self.device.maximum_point))
+
+    def play_sound(self):
+        """Description: method plays pad sound effect"""
+
+        self.stop_sound()
+        self.sound.play()
+
+    def stop_sound(self):
+        """Description: method stops sound effect"""
+
+        self.sound.stop()
