@@ -6,9 +6,9 @@
 import pygame
 import comm_utils
 import game_utils
-from pad import Pad
-from static_utils import StaticUtils
-from pressure_device import PressureDevice
+from game.pad import Pad
+from game.static_utils import StaticUtils
+from game.pressure_device import PressureDevice
 
 
 class PlayerPad(Pad):
@@ -22,15 +22,21 @@ class PlayerPad(Pad):
         # Testing
         self.key_pressed = False
         self.direction = "NONE"
+        self.target_y = 0
 
     def move(self):
         """Description: method provides player pad movement action"""
 
         if self.device.is_open():
-            pos_y = self.transform_to_pixel(self.device.reading)
-            if isinstance(pos_y, int):
-                self.pos_y = pos_y
-                super().move()
+            # pos_y = self.transform_to_pixel(self.device.reading)
+            self.target_y = self.transform_to_pixel(self.device.reading)
+            if isinstance(self.target_y, int):
+                if self.pos_y != self.target_y:
+                    if self.pos_y > self.target_y:
+                        self.pos_y -= game_utils.PAD_SPEED
+                    elif self.pos_y < self.target_y:
+                        self.pos_y += game_utils.PAD_SPEED
+            super().move()
         else:
             self.device.open()
 
@@ -40,10 +46,11 @@ class PlayerPad(Pad):
         :return: Pad pixel position or None in exception
         """
         try:
-            coord_x = int((reading - self.device.minimum_point)*100 /
+            coord_y = int((reading - self.device.minimum_point)*100 /
                           (self.device.maximum_point - self.device.minimum_point))
+
             return int((game_utils.B_HEIGHT - self.height -
-                        (game_utils.OFFSET_HEIGHT * 2)) * coord_x * .01)
+                        (game_utils.OFFSET_HEIGHT * 2)) * coord_y * .01)
         except TypeError:
             StaticUtils.print_message(comm_utils.CMD_ERROR, "Bad reading: " + str(reading))
             return None
@@ -88,6 +95,7 @@ class PlayerPad(Pad):
         self.device.open()
         self.device.calibrate_min()
         self.device.close()
+        self.device.minimum_point = 75328
         StaticUtils.print_message(comm_utils.CMD_RESPONSE, "Player " + self.name +
                                   " minimum point is -- " + str(self.device.minimum_point))
 
@@ -98,6 +106,7 @@ class PlayerPad(Pad):
         self.device.open()
         self.device.calibrate_max()
         self.device.close()
+        self.device.maximum_point = 75441
         StaticUtils.print_message(comm_utils.CMD_RESPONSE, "Player " + self.name +
                                   " maximum point is -- " + str(self.device.maximum_point))
 

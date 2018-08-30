@@ -7,8 +7,8 @@ import time
 import threading
 import comm_utils
 import game_utils
-from static_utils import StaticUtils
-from comm_serial import CommSerial
+from game.static_utils import StaticUtils
+from game.comm_serial import CommSerial
 
 
 class PressureDevice(threading.Thread):
@@ -82,10 +82,10 @@ class PressureDevice(threading.Thread):
         if (readings is not None) and (num > 1):
             while len(readings) <= num:
                 time.sleep(.3)
-                readings.append(get())
+                readings.append(int(get() * 100))
             return readings
         elif (readings is None) and (num == 1):
-            return get()
+            return int(get() * 100)
         else:
             raise ValueError("Invalid arguments provided")
 

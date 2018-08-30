@@ -148,11 +148,9 @@ class Board:
 
         if self.state == game_utils.CAL_MIN:
             self.player_blue.calibrate_min()
-            self.player_blue.device.minimum_point = 700
             # self.pRed.calibrate_min()
         elif self.state == game_utils.CAL_MAX:
             self.player_blue.calibrate_max()
-            self.player_blue.device.maximum_point = 1300
             # self.pRed.calibrate_max()
 
     def draw_board(self):
