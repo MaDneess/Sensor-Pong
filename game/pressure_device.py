@@ -29,7 +29,7 @@ class PressureDevice(threading.Thread):
 
         while self.board.state != game_utils.EXIT:
             while self.is_open() and self.board.state == game_utils.IN_GAME:
-                if (StaticUtils.get_millis() - self.started) > 350:
+                if (StaticUtils.get_millis() - self.started) > 500:
                     self.reading = self.get_readings(None, 1)
                     self.started = StaticUtils.get_millis()
         # close serial on exit

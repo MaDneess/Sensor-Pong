@@ -13,19 +13,11 @@ class CommSerial:
     """Description: serial communication class providing basic serial functionality"""
 
     def __init__(self, args):
-<<<<<<< HEAD
-        def assign_port(port, baudrate, tm=3):
-            """Description: method creates serial port object"""
-
-            try:
-                serial_port = Serial(port, baudrate, timeout=tm)
-=======
-        def assign_port(port, baudrate, time):
+        def assign_port(port, baudrate, time=3):
             """Description: method creates serial port object"""
 
             try:
                 serial_port = Serial(port, baudrate, timeout=time)
->>>>>>> ade5c64e580a3e410bfa1e935bb5b410fd328271
                 return serial_port
             except SerialException as e:
                 StaticUtils.print_message(CMD_ERROR, str(e))
@@ -34,11 +26,7 @@ class CommSerial:
         if len(args) == 3:
             self.serial = assign_port(args[0], int(args[1]), int(args[2]))
         elif len(args) == 2:
-<<<<<<< HEAD
             self.serial = assign_port(args[0], int(args[1]))
-=======
-            self.serial = assign_port(args[0], int(args[1]), 3)
->>>>>>> ade5c64e580a3e410bfa1e935bb5b410fd328271
 
         if self.serial is not None:
             self.port = args[0]

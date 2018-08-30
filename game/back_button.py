@@ -4,7 +4,7 @@
     Date: 2018/08/18
 """
 import game_utils
-from button import Button
+from game.button import Button
 
 
 class BackButton(Button):

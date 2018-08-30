@@ -8,8 +8,8 @@
 from serial import SerialException
 from serial import Serial
 import comm_utils
-from board import Board
-from static_utils import StaticUtils
+from game.board import Board
+from game.static_utils import StaticUtils
 
 
 def start_game():
