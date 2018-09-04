@@ -5,10 +5,10 @@
 """
 import time
 import threading
-import comm_utils
 import game_utils
 from game.static_utils import StaticUtils
 from game.comm_serial import CommSerial
+from game.comm_utils import *
 
 
 class PressureDevice(threading.Thread):
@@ -30,7 +30,7 @@ class PressureDevice(threading.Thread):
         while self.board.state != game_utils.EXIT:
             while self.is_open() and self.board.state == game_utils.IN_GAME:
                 if (StaticUtils.get_millis() - self.started) > 500:
-                    self.reading = self.get_readings(None, 1)
+                    self.reading = self.get_readings([], 1)[0]
                     self.started = StaticUtils.get_millis()
         # close serial on exit
         self.close()
@@ -75,19 +75,20 @@ class PressureDevice(threading.Thread):
 
             temp = StaticUtils.float_try_parse(self.comm_serial.read_buffer())
             while (temp is None) or (not temp[1]):
+                StaticUtils.print_message(CMD_ERROR, "Failed to float parse (get): " + temp)
                 temp = StaticUtils.float_try_parse(self.comm_serial.read_buffer())
                 if (temp is not None) and (temp[1]):
                     return round(temp[0], 2)
 
-        if (readings is not None) and (num > 1):
-            while len(readings) <= num:
-                time.sleep(.3)
+        if (readings is not None) and (num > 0):
+            while num > 0:
                 readings.append(int(get() * 100))
-            return readings
-        elif (readings is None) and (num == 1):
-            return int(get() * 100)
+                num -= 1
         else:
-            raise ValueError("Invalid arguments provided")
+            StaticUtils.print_message(CMD_ERROR, "Failed to check provided arguments (get_reading): ["
+                                      + str(readings) + "] [" + str(num))
+            readings = []
+        return readings
 
     def send_command(self, msg):
         """Description: method sends command to pressure device through serial
