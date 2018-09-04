@@ -284,6 +284,6 @@ class Board:
             font = pg.font.Font(game_utils.ARCADE_FONT, size)
             display_print(int(size * 0.5), "Press   ENTER   to continue", -10)
             if self.state == game_utils.CAL_MIN:
-                display_print(size, "HOLD SENSOR AT LOWER POINT", 0)
-            elif self.state == game_utils.CAL_MAX:
                 display_print(size, "HOLD SENSOR AT UPPER POINT", 0)
+            elif self.state == game_utils.CAL_MAX:
+                display_print(size, "HOLD SENSOR AT LOWER POINT", 0)

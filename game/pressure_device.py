@@ -3,7 +3,6 @@
     Author: Aleksej Z
     Date: 2018/08/18
 """
-import time
 import threading
 import game_utils
 from game.static_utils import StaticUtils

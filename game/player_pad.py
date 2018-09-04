@@ -95,7 +95,6 @@ class PlayerPad(Pad):
         self.device.open()
         self.device.calibrate_min()
         self.device.close()
-        self.device.minimum_point = 75328
         StaticUtils.print_message(comm_utils.CMD_RESPONSE, "Player " + self.name +
                                   " minimum point is -- " + str(self.device.minimum_point))
 
@@ -106,7 +105,6 @@ class PlayerPad(Pad):
         self.device.open()
         self.device.calibrate_max()
         self.device.close()
-        self.device.maximum_point = 75441
         StaticUtils.print_message(comm_utils.CMD_RESPONSE, "Player " + self.name +
                                   " maximum point is -- " + str(self.device.maximum_point))
 

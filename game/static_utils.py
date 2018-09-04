@@ -5,6 +5,7 @@
 """
 import time
 from datetime import datetime
+from game.comm_utils import *
 
 
 class StaticUtils:
@@ -66,6 +67,9 @@ class StaticUtils:
         :return: Mean of provided values
         """
 
+        for v in values:
+            if v is None:
+                StaticUtils.print_message(CMD_ERROR, "Failed to find mean of the provided list: " + str(values))
         return sum(values) / len(values)
 
     @staticmethod

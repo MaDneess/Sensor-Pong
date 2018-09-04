@@ -46,8 +46,8 @@ class CommSerial:
                 msg = msg.decode('utf-8', 'ignore')
                 msg = msg[:6]
                 print("Parsed message: " + msg)
-        except SerialException:
-            StaticUtils.print_message(CMD_ERROR, "Failed to read buffer")
+        except SerialException as ex:
+            StaticUtils.print_message(CMD_ERROR, "Failed to read buffer: " + str(ex))
         return msg
 
     def write_serial(self, str_msg):
@@ -60,8 +60,8 @@ class CommSerial:
             self.serial.write(msg)
         except SerialException:
             StaticUtils.print_message(CMD_ERROR, comm_utils.CONNECTION_EXCEPTION)
-        except TypeError:
-            StaticUtils.print_message(CMD_ERROR, "Failed to send bytes: " + str(msg))
+        except TypeError as ex:
+            StaticUtils.print_message(CMD_ERROR, "Failed to send bytes: " + str(ex))
 
     def serial_open(self):
         """Description: method opens serial port"""
