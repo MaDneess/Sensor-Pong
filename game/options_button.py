@@ -4,7 +4,7 @@
     Date: 2018/08/18
 """
 import game_utils
-from game.button import Button
+from button import Button
 
 
 class OptionsButton(Button):

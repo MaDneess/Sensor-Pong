@@ -5,8 +5,9 @@
 """
 from serial import Serial
 from serial import SerialException
-from game.static_utils import StaticUtils
-from game.comm_utils import *
+from static_utils import StaticUtils
+from comm_utils import *
+import time
 
 
 class CommSerial:
@@ -41,10 +42,12 @@ class CommSerial:
 
         msg = ""
         try:
+            time.sleep(0.1)
             if self.serial.inWaiting():
                 msg = self.serial.readline()
+                print("Before parse: " + str(msg))
                 msg = msg.decode('utf-8', 'ignore')
-                msg = msg[:6]
+                msg = msg[:7]
                 print("Parsed message: " + msg)
         except SerialException as ex:
             StaticUtils.print_message(CMD_ERROR, "Failed to read buffer: " + str(ex))

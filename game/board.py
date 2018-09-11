@@ -7,14 +7,14 @@ import sys
 import pygame as pg
 from pygame.constants import *
 import game_utils
-from game.player_pad import PlayerPad
-from game.game_button import GameButton
-from game.options_button import OptionsButton
-from game.exit_button import ExitButton
-from game.calibrate_button import CalibrateButton
-from game.music_button import MusicButton
-from game.back_button import BackButton
-from game.ball import Ball
+from player_pad import PlayerPad
+from game_button import GameButton
+from options_button import OptionsButton
+from exit_button import ExitButton
+from calibrate_button import CalibrateButton
+from music_button import MusicButton
+from back_button import BackButton
+from ball import Ball
 
 
 class Board:

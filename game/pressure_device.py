@@ -5,9 +5,10 @@
 """
 import threading
 import game_utils
-from game.static_utils import StaticUtils
-from game.comm_serial import CommSerial
-from game.comm_utils import *
+from static_utils import StaticUtils
+from comm_serial import CommSerial
+from comm_utils import *
+import time
 
 
 class PressureDevice(threading.Thread):
@@ -28,7 +29,7 @@ class PressureDevice(threading.Thread):
 
         while self.board.state != game_utils.EXIT:
             while self.is_open() and self.board.state == game_utils.IN_GAME:
-                if (StaticUtils.get_millis() - self.started) > 500:
+                if (StaticUtils.get_millis() - self.started) > 300:
                     self.reading = self.get_readings([], 1)[0]
                     self.started = StaticUtils.get_millis()
         # close serial on exit
@@ -74,14 +75,19 @@ class PressureDevice(threading.Thread):
 
             temp = StaticUtils.float_try_parse(self.comm_serial.read_buffer())
             while (temp is None) or (not temp[1]):
-                StaticUtils.print_message(CMD_ERROR, "Failed to float parse (get): " + temp)
+                if(self.board.state != game_utils.IN_GAME):
+                    time.sleep(.3)
+                StaticUtils.print_message(CMD_ERROR, "Failed to float parse (get): " + str(temp))
                 temp = StaticUtils.float_try_parse(self.comm_serial.read_buffer())
                 if (temp is not None) and (temp[1]):
                     return round(temp[0], 2)
 
         if (readings is not None) and (num > 0):
             while num > 0:
-                readings.append(int(get() * 100))
+                r = get()
+                r = float(r)
+                print(r)
+                readings.append(int(r * 100))
                 num -= 1
         else:
             StaticUtils.print_message(CMD_ERROR, "Failed to check provided arguments (get_reading): ["

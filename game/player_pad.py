@@ -6,9 +6,9 @@
 import pygame
 import comm_utils
 import game_utils
-from game.pad import Pad
-from game.static_utils import StaticUtils
-from game.pressure_device import PressureDevice
+from pad import Pad
+from static_utils import StaticUtils
+from pressure_device import PressureDevice
 
 
 class PlayerPad(Pad):

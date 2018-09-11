@@ -5,7 +5,7 @@
 """
 import time
 from datetime import datetime
-from game.comm_utils import *
+from comm_utils import *
 
 
 class StaticUtils:
