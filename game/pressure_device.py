@@ -4,7 +4,7 @@
     Date: 2018/08/18
 """
 import threading
-import game_utils
+from game_utils import *
 from static_utils import StaticUtils
 from comm_serial import CommSerial
 from comm_utils import *
@@ -23,17 +23,31 @@ class PressureDevice(threading.Thread):
         self.reading = 0
         self.started = StaticUtils.get_millis()
         self.middle_point = 0
+        self.current = 0
+        self.move_state = MOVE_NEUTRAL
 
     def run(self):
         """Description: threads runnable method"""
 
-        while self.board.state != game_utils.EXIT:
-            while self.is_open() and self.board.state == game_utils.IN_GAME:
+        while self.board.state != EXIT:
+            while self.is_open() and self.board.state == IN_GAME:
                 if (StaticUtils.get_millis() - self.started) > 300:
-                    self.reading = self.get_readings([], 1)[0]
-                    self.started = StaticUtils.get_millis()
+                    self.get_difference()
+                    #self.reading = self.get_readings([], 1)[0]
+                    #self.started = StaticUtils.get_millis()
         # close serial on exit
         self.close()
+
+    def get_difference(self):
+        """Description: """		
+        r = self.get_readings([], 1)[0]
+        if r < self.current:
+            self.move_state = MOVE_DOWN
+        elif r > self.current:
+            self.move_state = MOVE_UP
+        else:
+            self.move_state = MOVE_NEUTRAL
+        self.current = r
 
     def calibrate_min(self):
         """Description: method takes 5 readings and sets minimum point"""
@@ -74,20 +88,15 @@ class PressureDevice(threading.Thread):
             """Description: methods get single reading from device"""
 
             temp = StaticUtils.float_try_parse(self.comm_serial.read_buffer())
-            while (temp is None) or (not temp[1]):
-                if(self.board.state != game_utils.IN_GAME):
-                    time.sleep(.3)
-                StaticUtils.print_message(CMD_ERROR, "Failed to float parse (get): " + str(temp))
+            while (temp is None) or (not temp[1]) or (not isinstance(temp[0], float)):
+                time.sleep(.3)
                 temp = StaticUtils.float_try_parse(self.comm_serial.read_buffer())
-                if (temp is not None) and (temp[1]):
-                    return round(temp[0], 2)
+            return round(temp[0], 2)
 
         if (readings is not None) and (num > 0):
             while num > 0:
-                r = get()
-                r = float(r)
-                print(r)
-                readings.append(int(r * 100))
+                r = float(get())
+                readings.append(r)
                 num -= 1
         else:
             StaticUtils.print_message(CMD_ERROR, "Failed to check provided arguments (get_reading): ["

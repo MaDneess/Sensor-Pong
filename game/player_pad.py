@@ -23,6 +23,16 @@ class PlayerPad(Pad):
         self.key_pressed = False
         self.direction = "NONE"
         self.target_y = 0
+    
+    def move_by_state(self):
+        if self.device.is_open():
+            if self.device.move_state == game_utils.MOVE_DOWN:
+                self.pos_y += game_utils.PAD_SPEED
+            elif self.device.move_state == game_utils.MOVE_UP:
+                self.pos_y -= game_utils.PAD_SPEED
+            super().move()
+        else:
+            self.device.open()
 
     def move(self):
         """Description: method provides player pad movement action"""

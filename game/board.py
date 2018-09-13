@@ -120,7 +120,10 @@ class Board:
             self.display.fill(game_utils.WHITE)
             self.draw_board()
             self.draw_scores()
-            self.player_blue.move()
+            # new by state movement
+            self.player_blue.move_by_state()
+            # min - max movement
+            # self.player_blue.move()
             # self.pRed.move()
             # -- For testing --
             # self.player_blue.move_key()

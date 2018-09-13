@@ -42,14 +42,13 @@ class CommSerial:
 
         msg = ""
         try:
-            time.sleep(0.1)
             if self.serial.inWaiting():
                 msg = self.serial.readline()
-                print("Before parse: " + str(msg))
                 msg = msg.decode('utf-8', 'ignore')
                 msg = msg[:7]
-                print("Parsed message: " + msg)
         except SerialException as ex:
+            StaticUtils.print_message(CMD_ERROR, "Failed to read buffer: " + str(ex))
+        except TypeError as ex:
             StaticUtils.print_message(CMD_ERROR, "Failed to read buffer: " + str(ex))
         return msg
 
