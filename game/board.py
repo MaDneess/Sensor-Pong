@@ -30,9 +30,8 @@ class Board:
         self.cal_btn = CalibrateButton(0, "CALIBRATE", self)
         self.music_btn = MusicButton(1, "MUSIC ON", self)
         self.back_btn = BackButton(2, "BACK", self)
-        # self.player_blue = PlayerPad('LEFT', None, self)
         self.player_blue = PlayerPad('LEFT', port1, self)
-        # self.player_red = PlayerPad('RIGHT', port2, self)
+        self.player_red = PlayerPad('RIGHT', port2, self)
         self.ball = Ball(game_utils.BALL_X, game_utils.BALL_Y)
         self.music = True
         self.clock = pg.time.Clock()
@@ -122,15 +121,16 @@ class Board:
             self.draw_scores()
             # new by state movement
             self.player_blue.move_by_state()
+            self.player_red.move_by_state()
             # min - max movement
             # self.player_blue.move()
-            # self.pRed.move()
+            # self.player_red.move()
             # -- For testing --
             # self.player_blue.move_key()
             # -----------------
-            self.ball.move(self.player_blue)
+            self.ball.move(self.player_blue, self.player_red)
             self.player_blue.update(self.display)
-            # self.pRed.update(self.display)
+            self.player_red.update(self.display)
             self.ball.update(self.display)
 
     def menu_loop(self):
@@ -151,10 +151,10 @@ class Board:
 
         if self.state == game_utils.CAL_MIN:
             self.player_blue.calibrate_min()
-            # self.pRed.calibrate_min()
+            self.player_red.calibrate_min()
         elif self.state == game_utils.CAL_MAX:
             self.player_blue.calibrate_max()
-            # self.pRed.calibrate_max()
+            self.player_red.calibrate_max()
 
     def draw_board(self):
         """Description: method draws basic game board structure"""
@@ -177,13 +177,13 @@ class Board:
         size = int(game_utils.B_HEIGHT * .1)
         font = pg.font.Font(game_utils.ARCADE_FONT, size)
         score1 = font.render(str(self.player_blue.score), True, game_utils.BLACK)
-        # score2 = font.render(str(self.pRed.score), True, game_utils.BLACK)
+        score2 = font.render(str(self.player_red.score), True, game_utils.BLACK)
         rect1 = score1.get_rect()
-        # rect2 = score2.get_rect()
+        rect2 = score2.get_rect()
         rect1.topright = (int(game_utils.B_WIDTH / 2) - 10, game_utils.OFFSET_HEIGHT)
-        # rect2.topleft = (int(game_utils.B_WIDTH/2)-10, game_utils.OFFSET_HEIGHT)
+        rect2.topleft = (int(game_utils.B_WIDTH/2)+10, game_utils.OFFSET_HEIGHT)
         self.display.blit(score1, rect1)
-        # self.display.blit(score2, rect2)
+        self.display.blit(score2, rect2)
 
     def draw_menu_buttons(self):
         """Description: method draws main menu buttons"""

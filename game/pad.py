@@ -27,6 +27,10 @@ class Pad(ABC):
                           - game_utils.PAD_HEIGHT) / 2)
         self.score = 0
 
+    def reset(self):
+        self.pos_y = (int(game_utils.B_HEIGHT - game_utils.OFFSET_HEIGHT
+                          - game_utils.PAD_HEIGHT) / 2)
+
     @abstractmethod
     def move(self):
         """Description: method checks pad Y position"""

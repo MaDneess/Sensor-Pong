@@ -39,6 +39,8 @@ def start_game():
             return False
 
         temp = None
+        temp = input("Device %d, Specify device port, baudrate (opt. timeout)"
+                     "\n{PORT}:{BAUDRATE}:{TIMEOUT}\n" % device_num)
         # ask for a valid command until received
         while not is_valid_input(temp):
             StaticUtils.print_message(comm_utils.CMD_ERROR, comm_utils.INVALID_PORT_EXCEPTION)
@@ -46,42 +48,41 @@ def start_game():
                          "\n{PORT}:{BAUDRATE}:{TIMEOUT}\n" % device_num)
         return temp
 
-    def check_equal_ports(name_1, name_2):
+    def check_equal_ports(port_1, port_2):
         """Description: function checks if port names are identical
-        :param name_1: Port 1 name
-        :param name_2: Port 2 name
+        :param port_1: Port 1 name
+        :param port_2: Port 2 name
         """
-
-        while name_1[0] == name_2[0]:
+        while port_1[0] == port_2[0]:
             StaticUtils.print_message(comm_utils.CMD_ERROR, comm_utils.IDENTICAL_PORTS_EXCEPTION)
-            name_1 = get_port_details(1)
-            name_2 = get_port_details(2)
-            name_1 = name_1.split(':')
-            name_2 = name_2.split(':')
+            port_1 = get_port_details(1)
+            port_2 = get_port_details(2)
+            port_1 = port_1.split(':')
+            port_2 = port_2.split(':')
 
     StaticUtils.print_banner()
     # get serial ports details
-    port1_check, port2_check = False, True
+    port1_check, port2_check = False, False
     port1, port2 = None, None
     while not port1_check or not port2_check:
         port1 = get_port_details(1)
-        # port2 = get_port_details(2)
+        port2 = get_port_details(2)
         port1 = port1.split(':')
-        # port2 = port2.split(':')
-        # check_equal_ports(port1[0], port2[0])
+        port2 = port2.split(':')
+        check_equal_ports(port1, port2)
         try:
             test_comm_serial = Serial(port1[0], int(port1[1]))
             test_comm_serial.close()
             port1_check = True
         except SerialException as e:
             StaticUtils.print_message(comm_utils.CMD_ERROR, str(e))
-        # try:
-        #     test_comm_serial = Serial(port2[0], int(port2[1]))
-        #     test_comm_serial.close()
-        #     port3_check = True
-        # except SerialException as e:
-        #     StaticUtils.print_message(str(e))
-    board = Board(port1, port2=[])
+        try:
+            test_comm_serial = Serial(port2[0], int(port2[1]))
+            test_comm_serial.close()
+            port2_check = True
+        except SerialException as e:
+            StaticUtils.print_message(str(e))
+    board = Board(port1, port2)
     board.run()
 
 
