@@ -1,0 +1,11 @@
+# Intellij
+*.iml
+game/.idea/
+game/.idea/workspace.xml
+game/.idea/tasks.xml
+game/.idea/gradle.xml
+game/.idea/dictionaries
+game/.idea/libraries
+
+*.pyc
+*.pyo
