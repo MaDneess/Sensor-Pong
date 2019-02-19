@@ -15,12 +15,13 @@ from calibrate_button import CalibrateButton
 from music_button import MusicButton
 from back_button import BackButton
 from ball import Ball
+from sensor_device import SensorDevice
 
 
 class Board:
     """Description: game board contains main gui and game widgets"""
 
-    def __init__(self, port1, port2):
+    def __init__(self, port):
         pg.init()
         self.state = game_utils.IN_MENU
         # INIT BUTTONS
@@ -30,9 +31,15 @@ class Board:
         self.cal_btn = CalibrateButton(0, "CALIBRATE", self)
         self.music_btn = MusicButton(1, "MUSIC ON", self)
         self.back_btn = BackButton(2, "BACK", self)
-        # self.player_blue = PlayerPad('LEFT', None, self)
-        self.player_blue = PlayerPad('LEFT', port1, self)
-        # self.player_red = PlayerPad('RIGHT', port2, self)
+
+        self.game_started = False
+
+        sensor = SensorDevice(port, self)
+        sensor.start()
+
+        self.player_blue = PlayerPad('LEFT', sensor)
+        self.player_red = PlayerPad('RIGHT', sensor)
+
         self.ball = Ball(game_utils.BALL_X, game_utils.BALL_Y)
         self.music = True
         self.clock = pg.time.Clock()
@@ -120,14 +127,22 @@ class Board:
             self.display.fill(game_utils.WHITE)
             self.draw_board()
             self.draw_scores()
+
             self.player_blue.move()
-            # self.pRed.move()
+            self.player_red.move()
+            if not self.game_started:
+                self.game_started = True
+
             # -- For testing --
             # self.player_blue.move_key()
             # -----------------
-            self.ball.move(self.player_blue)
+
+            if self.game_started:
+                self.ball.move(self.player_blue, self.player_red)
+
             self.player_blue.update(self.display)
-            # self.pRed.update(self.display)
+            self.player_red.update(self.display)
+
             self.ball.update(self.display)
 
     def menu_loop(self):

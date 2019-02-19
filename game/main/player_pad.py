@@ -8,16 +8,14 @@ import game_utils
 import comm_utils
 from pad import Pad
 from static_utils import StaticUtils
-from pressure_device import PressureDevice
 
 
 class PlayerPad(Pad):
     """Description: pad class with player actions and behavior"""
 
-    def __init__(self, side, port, board):
+    def __init__(self, side, device):
         Pad.__init__(self, side)
-        self.device = PressureDevice(port, board)
-        self.device.start()
+        self.device = device
         self.sound = pygame.mixer.Sound(game_utils.PAD_HIT)
         # Testing
         self.key_pressed = False
@@ -28,8 +26,11 @@ class PlayerPad(Pad):
         """Description: method provides player pad movement action"""
 
         if self.device.is_open():
-            # pos_y = self.transform_to_pixel(self.device.reading)
-            self.target_y = self.transform_to_pixel(self.device.reading)
+            if self.name is "BLUE":
+                self.target_y = self.transform_to_pixel(self.device.reading_1)
+            else:
+                self.target_y = self.transform_to_pixel(self.device.reading_2)
+
             if isinstance(self.target_y, int):
                 if self.pos_y != self.target_y:
                     if self.pos_y > self.target_y:
@@ -45,31 +46,18 @@ class PlayerPad(Pad):
         :param: Device reading
         :return: Pad pixel position or None in exception
         """
-        try:
-            coord_y = int((reading - self.device.minimum_point)*100 /
-                          (self.device.maximum_point - self.device.minimum_point))
+        if reading != -1:
+            try:
+                coord_y = int((reading - self.device.minimum_point) * 100 /
+                              (self.device.maximum_point - self.device.minimum_point))
 
-            return int((game_utils.B_HEIGHT - self.height -
-                        (game_utils.OFFSET_HEIGHT * 2)) * coord_y * .01)
-        except TypeError:
-            StaticUtils.print_message(comm_utils.CMD_ERROR, "Bad reading: " + str(reading))
+                return int((game_utils.B_HEIGHT - self.height -
+                            (game_utils.OFFSET_HEIGHT * 2)) * coord_y * .01)
+            except TypeError:
+                StaticUtils.print_message(comm_utils.CMD_ERROR, "Bad reading: " + str(reading))
+                return None
+        else:
             return None
-
-    def move_key(self):
-        """Description: method provides player pad movement on key press"""
-
-        if self.key_pressed:
-            if self.direction == "UP":
-                coord = -game_utils.PAD_SPEED
-            elif self.direction == "DOWN":
-                coord = game_utils.PAD_SPEED
-
-        self.pos_y += coord
-        if self.pos_y < game_utils.OFFSET_HEIGHT:
-            self.pos_y = game_utils.OFFSET_HEIGHT
-        elif (self.pos_y + self.height) > \
-                (game_utils.B_HEIGHT - game_utils.OFFSET_HEIGHT):
-            self.pos_y = game_utils.B_HEIGHT - game_utils.OFFSET_HEIGHT - self.height
 
     def update(self, board):
         """Description: method updates pd position on display
@@ -77,38 +65,6 @@ class PlayerPad(Pad):
         """
 
         pygame.draw.rect(board, game_utils.BLACK, self.get_rect(), 0)
-
-    def calibrate_device(self):
-        """Description: method calibrates middle point of the device"""
-
-        StaticUtils.print_message(comm_utils.CMD_OK, "Calibrating Player " + self.name)
-        self.device.open()
-        self.device.calibrate()
-        self.device.close()
-        StaticUtils.print_message(comm_utils.CMD_RESPONSE,
-                                  "Player middle point: " + self.device.middle_point)
-
-    def calibrate_min(self):
-        """Description: method calibrates device minimum point"""
-
-        StaticUtils.print_message(comm_utils.CMD_OK, "Calibrating Player " + self.name)
-        self.device.open()
-        self.device.calibrate_min()
-        self.device.close()
-        self.device.minimum_point = 75328
-        StaticUtils.print_message(comm_utils.CMD_RESPONSE, "Player " + self.name +
-                                  " minimum point is -- " + str(self.device.minimum_point))
-
-    def calibrate_max(self):
-        """Description: method calibrates device maximum point"""
-
-        StaticUtils.print_message(comm_utils.CMD_OK, "Calibrating Player " + self.name)
-        self.device.open()
-        self.device.calibrate_max()
-        self.device.close()
-        self.device.maximum_point = 75441
-        StaticUtils.print_message(comm_utils.CMD_RESPONSE, "Player " + self.name +
-                                  " maximum point is -- " + str(self.device.maximum_point))
 
     def play_sound(self):
         """Description: method plays pad sound effect"""

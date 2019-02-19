@@ -65,7 +65,8 @@ def start_game():
     port1_check, port2_check = False, True
     port1, port2 = None, None
     while not port1_check or not port2_check:
-        port1 = get_port_details(1)
+        # port1 = get_port_details(1)
+        port1 = "COM11:9600"
         # port2 = get_port_details(2)
         port1 = port1.split(':')
         # port2 = port2.split(':')
@@ -82,7 +83,7 @@ def start_game():
         #     port3_check = True
         # except SerialException as e:
         #     StaticUtils.print_message(str(e))
-    board = Board(port1, port2=[])
+    board = Board(port1)
     board.run()
 
 
