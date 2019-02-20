@@ -8,32 +8,14 @@ int value2_sensor2 = 0;
 int output_sensor1 = 0;
 int output_sensor2 = 0;
 
-bool stopValues = true;
-
-String START_CMD = "S1\r\n";
-String STOP_CMD = "S0\r\n";
-
 String s;
 
 void setup() {
   Serial.begin(9600);
+  Serial.flush();
 }
 
 void loop() {
-
-  int num = checkMessage();
-  if (num != -1) {
-    if (num == 0) {
-      stopValues = true;
-    } else {
-      if (num == 1) {
-        stopValues = false;
-      }
-    }
-  }
-
-  if (!stopValues) {
-  
   s = "{\"sensor1\":";
   
   value_sensor1 = analogRead(analog_sensor1);
@@ -67,20 +49,5 @@ void loop() {
   s = "";
   
   delay(50);
-  }
   
-}
-
-int checkMessage() {
-  if (Serial.available()) {
-    String msg = Serial.readString();
-    if (msg.equals(START_CMD)) {
-      return 0;
-    } else {
-      if (msg.equals(STOP_CMD)) {
-        return 1;
-      }
-    }
-  }
-  return -1;
 }

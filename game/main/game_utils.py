@@ -20,8 +20,8 @@ CAL_MIN = "CAL_MIN"
 CAL_MAX = "CAL_CAL"
 
 # SCREEN/BOARD SIZES
-B_WIDTH = int(1280)
-B_HEIGHT = int(860)
+B_WIDTH = int(640)
+B_HEIGHT = int(480)
 
 FPS = 45
 
