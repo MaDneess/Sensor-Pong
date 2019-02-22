@@ -40,11 +40,11 @@ class SensorDevice(threading.Thread):
 
     def get(self):
         """Description: methods get single reading from device"""
-
+        msg = self.comm_serial.read_buffer()
         try:
-            data_dict = json.loads(self.comm_serial.read_buffer())
+            data_dict = json.loads(msg)
         except JSONDecodeError:
-            StaticUtils.print_message(comm_utils.CMD_DEBUG, "Failed to parse json string")
+            StaticUtils.print_message(comm_utils.CMD_DEBUG, "Failed to parse json string: %s" % msg)
             return -1, -1
         StaticUtils.print_message(comm_utils.CMD_DEBUG, str(data_dict))
         return data_dict["sensor1"], data_dict["sensor2"]

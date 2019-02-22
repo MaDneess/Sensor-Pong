@@ -13,8 +13,8 @@ from static_utils import StaticUtils
 class PlayerPad(Pad):
     """Description: pad class with player actions and behavior"""
 
-    def __init__(self, side, device):
-        Pad.__init__(self, side)
+    def __init__(self, side, device, color=None):
+        Pad.__init__(self, side, color)
         self.device = device
         self.sound = pygame.mixer.Sound(game_utils.PAD_HIT)
         # Testing
@@ -25,21 +25,20 @@ class PlayerPad(Pad):
     def move(self):
         """Description: method provides player pad movement action"""
 
-        if self.device.is_open():
-            if self.name is "BLUE":
-                self.target_y = self.transform_to_pixel(self.device.reading_1)
-            else:
-                self.target_y = self.transform_to_pixel(self.device.reading_2)
-
-            if isinstance(self.target_y, int):
-                if self.pos_y != self.target_y:
-                    if self.pos_y > self.target_y:
-                        self.pos_y -= game_utils.PAD_SPEED
-                    elif self.pos_y < self.target_y:
-                        self.pos_y += game_utils.PAD_SPEED
-            super().move()
-        else:
+        if not self.device.is_open():
             self.device.open()
+
+        if self.name is "BLUE":
+            self.target_y = self.transform_to_pixel(self.device.reading_1)
+        else:
+            self.target_y = self.transform_to_pixel(self.device.reading_2)
+        if isinstance(self.target_y, int):
+            if self.pos_y != self.target_y:
+                if self.pos_y > self.target_y:
+                    self.pos_y -= game_utils.PAD_SPEED
+                elif self.pos_y < self.target_y:
+                    self.pos_y += game_utils.PAD_SPEED
+        super().move()
 
     def transform_to_pixel(self, reading):
         """Description: method transforms device readings into player pad position
@@ -64,7 +63,7 @@ class PlayerPad(Pad):
         :param: Board display
         """
 
-        pygame.draw.rect(board, game_utils.BLACK, self.get_rect(), 0)
+        pygame.draw.rect(board, self.color, self.get_rect(), 0)
 
     def play_sound(self):
         """Description: method plays pad sound effect"""

@@ -29,9 +29,7 @@ FPS = 45
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 LIGHT_BLUE = (26, 140, 255)
-
-# IMAGES
-LOGO = pygame.image.load(os.path.join(PATH, "images", "ge.png"))
+DARK_RED = (217, 16, 26)
 
 # FONTS
 ARCADE_FONT = os.path.join(PATH, "fonts", "arcade.ttf")
@@ -50,8 +48,8 @@ POS_Y = int(B_WIDTH * 0.40)
 
 # BALL OPTIONS
 BALL_SIZE = int(B_HEIGHT*.03)
-BALL_X = int((B_WIDTH - BALL_SIZE)/2)
-BALL_Y = int((B_HEIGHT - BALL_SIZE)/2)
+BALL_X = int(B_WIDTH/2)
+BALL_Y = int(B_HEIGHT/2)
 BALL_SPEED_X = 7
 BALL_SPEED_Y = 3
 BALL_VELOCITY = 2
@@ -64,6 +62,6 @@ OFFSET_WIDTH = 25
 OFFSET_HEIGHT = 10
 
 PAD_WIDTH = int(B_WIDTH * 2.5 / 100)
-PAD_HEIGHT = int(B_HEIGHT * 22.5 / 100)
+PAD_HEIGHT = int(B_HEIGHT * 40 / 100)
 PAD_SPEED = int(B_HEIGHT * 0.5 / 100)
 

@@ -12,7 +12,7 @@ import comm_utils
 class Pad(ABC):
     """Description: pad class providing general pad behavior"""
 
-    def __init__(self, side):
+    def __init__(self, side, color=None):
         self.width = game_utils.PAD_WIDTH
         self.height = game_utils.PAD_HEIGHT
         if side == 'LEFT':
@@ -25,6 +25,15 @@ class Pad(ABC):
             raise Exception(comm_utils.CMD_ERROR + " Unknown side argument")
         self.pos_y = (int(game_utils.B_HEIGHT - game_utils.OFFSET_HEIGHT
                           - game_utils.PAD_HEIGHT) / 2)
+        self.starting_x, self.starting_y = self.pos_x, self.pos_y
+        self.score = 0
+        if color is None:
+            self.color = game_utils.BLACK
+        else:
+            self.color = color
+
+    def reset(self):
+        self.pos_x, self.pos_y = self.starting_x, self.starting_y
         self.score = 0
 
     @abstractmethod

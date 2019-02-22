@@ -6,14 +6,15 @@
 from datetime import datetime
 import pygame
 import game_utils
+import random
 
 
 class Ball:
     """Description: ball class defines basic behavior of the object"""
 
-    def __init__(self, pos_x, pos_y):
-        self.pos_x = pos_x
-        self.pos_y = pos_y
+    def __init__(self, pos_x=game_utils.BALL_X, pos_y=game_utils.BALL_Y):
+        self.starting_pos_x, self.starting_pos_y = pos_x, pos_y
+        self.pos_x, self.pos_y = pos_x, pos_y
         self.color = game_utils.BLACK
         self.sound_hit = pygame.mixer.Sound(game_utils.BALL_HIT)
         self.sound_scored = pygame.mixer.Sound(game_utils.BALL_SCORED)
@@ -23,45 +24,40 @@ class Ball:
         self.dir_y = "UP"
         self.changed = False
 
-    def move(self, player_blue, player_red):
+    def move(self, player_blue, player_red, board):
         """Description: method moves ball object with collision behavior
         :param: Player one
         """
 
         if self.is_colliding(player_blue, True):
-            print(self.get_rect().right)
-            print(player_red.get_rect().left)
-
             self.change_direction()
-            player_blue.stop_sound()
-            player_blue.play_sound()
-
+            if board.music:
+                player_blue.stop_sound()
+                player_blue.play_sound()
         if self.is_colliding(player_red, False):
-            print(self.get_rect().right)
-            print(player_red.get_rect().left)
-
             self.change_direction()
-            player_red.stop_sound()
-            player_red.play_sound()
+            if board.music:
+                player_red.stop_sound()
+                player_red.play_sound()
 
-        if self.pos_x < game_utils.BALL_SIZE:
-            self.play_sound_hit()
-            self.dir_x = "RIGHT"
-            self.pos_x = game_utils.BALL_SIZE
-            self.changed = False
-        elif (self.pos_x + game_utils.BALL_SIZE) > game_utils.B_WIDTH:
-            self.play_sound_hit()
-            self.dir_x = "LEFT"
-            self.pos_x = game_utils.B_WIDTH - game_utils.BALL_SIZE
-            self.changed = False
+        if self.pos_x <= game_utils.BALL_SIZE:
+            player_red.score += 1
+            if board.music:
+                board.ball_scored()
+        elif (self.pos_x + game_utils.BALL_SIZE) >= game_utils.B_WIDTH:
+            player_blue.score += 1
+            if board.music:
+                board.ball_scored()
 
         if self.pos_y < game_utils.BALL_SIZE:
-            self.play_sound_hit()
+            if board.music:
+                self.play_sound_hit()
             self.dir_y = "DOWN"
             self.pos_y = game_utils.BALL_SIZE
             self.changed = False
         elif (self.pos_y + game_utils.BALL_SIZE) > game_utils.B_HEIGHT:
-            self.play_sound_hit()
+            if board.music:
+                self.play_sound_hit()
             self.dir_y = "UP"
             self.pos_y = game_utils.B_HEIGHT - game_utils.BALL_SIZE
             self.changed = False
@@ -82,16 +78,16 @@ class Ball:
     def update(self, display):
         """Description: method updates ball position on display"""
 
-        pygame.draw.circle(display, game_utils.BLACK,
-                           (self.pos_x, self.pos_y), game_utils.BALL_SIZE, 0)
+        pygame.draw.circle(display, game_utils.BLACK, (self.pos_x, self.pos_y), game_utils.BALL_SIZE, 0)
 
     def get_rect(self):
         """Description: method returns rectangle object of the ball
         :return: Rectangle object
         """
 
-        return pygame.Rect((self.pos_x, self.pos_y),
-                           (game_utils.BALL_SIZE * 2, game_utils.BALL_SIZE * 2))
+        rect = pygame.Rect((0,0), (2*game_utils.BALL_SIZE, 2*game_utils.BALL_SIZE))
+        rect.center = self.pos_x, self.pos_y
+        return rect
 
     def is_colliding(self, pad, is_left):
         """Description: methods checks if ball object collides with player pad"""
@@ -113,8 +109,8 @@ class Ball:
                         collided = True
                         break
         else:
-            top_right = ball.topleft
-            bottom_right = ball.bottomleft
+            top_right = ball.topright
+            bottom_right = ball.bottomright
 
             top = obj.topleft
             bottom = obj.bottomleft
@@ -153,3 +149,19 @@ class Ball:
 
         self.sound_hit.stop()
         self.sound_scored.stop()
+
+    def reset(self):
+        self.pos_x, self.pos_y = self.starting_pos_x, self.starting_pos_y
+        num = random.randint(0, 80)
+        if num < 20:
+            self.dir_x = "LEFT"
+            self.dir_y = "DOWN"
+        elif num < 40:
+            self.dir_x = "RIGHT"
+            self.dir_y = "UP"
+        elif num < 60:
+            self.dir_x = "LEFT"
+            self.dir_y = "UP"
+        elif num < 80:
+            self.dir_x = "RIGHT"
+            self.dir_y = "DOWN"

@@ -15,5 +15,6 @@ class GameButton(Button):
 
     def on_click(self):
         """Description: method contains action events on button click"""
-        # self.board.state = game_utils.IN_GAME_CAL
+
         self.board.state = game_utils.IN_GAME
+        self.board.restart_game()
