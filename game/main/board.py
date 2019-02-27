@@ -269,9 +269,9 @@ class Board:
         self.display.blit(text, text_rect)
 
     def ball_scored(self):
-        if self.player_blue.score == 1:
+        if self.player_blue.score == 5:
             self.state = game_utils.IN_GAME_WIN_P1
-        elif self.player_red.score == 1:
+        elif self.player_red.score == 5:
             self.state = game_utils.IN_GAME_WIN_P2
         else:
             self.game_started = False
